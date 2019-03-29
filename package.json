@@ -1,7 +1,7 @@
 {
   "name": "bin-tool",
-  "version": "1.0.0",
-  "description": "bin-tool",
+  "version": "0.0.1",
+  "description": "The command bin tool",
   "main": "src/index.js",
   "scripts": {
     "test": "nyc ava --timeout=10s",
@@ -17,7 +17,13 @@
     "url": "git://github.com/kaelzhang/bin-tool.git"
   },
   "keywords": [
-    "bin-tool"
+    "bin-tool",
+    "commander",
+    "sub commands",
+    "command line",
+    "argv",
+    "argv-parser",
+    "getopt"
   ],
   "engines": {
     "node": ">= 6"
@@ -37,5 +43,8 @@
     "eslint-config-ostai": "^1.1.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint": "^5.14.0"
+  },
+  "dependencies": {
+    "skema": "^9.4.1"
   }
 }
