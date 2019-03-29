@@ -1,0 +1,41 @@
+{
+  "name": "bin-tool",
+  "version": "1.0.0",
+  "description": "bin-tool",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "nyc ava --timeout=10s",
+    "test-no-report": "NODE_DEBUG=bin-tool nyc ava --timeout=10s --verbose",
+    "lint": "eslint .",
+    "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
+  },
+  "files": [
+    "src/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kaelzhang/bin-tool.git"
+  },
+  "keywords": [
+    "bin-tool"
+  ],
+  "engines": {
+    "node": ">= 6"
+  },
+  "ava": {
+    "babel": false
+  },
+  "author": "kaelzhang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kaelzhang/bin-tool/issues"
+  },
+  "devDependencies": {
+    "ava": "^1.2.1",
+    "codecov": "^3.2.0",
+    "nyc": "^13.3.0",
+    "eslint-config-ostai": "^1.1.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint": "^5.14.0"
+  }
+}
