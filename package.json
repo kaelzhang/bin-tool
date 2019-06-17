@@ -46,6 +46,8 @@
     "nyc": "^14.1.1"
   },
   "dependencies": {
+    "core-util-is": "^1.0.2",
+    "err-object": "^5.1.2",
     "minimist": "^1.2.0",
     "skema": "^9.4.1"
   }
