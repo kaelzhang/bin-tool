@@ -48,6 +48,8 @@ class Command {
       removeCamelCase: false,
     }
 
+    this[OPTIONS] = new Options()
+
     // <commandName, Command>
     this[COMMANDS] = new Map()
   }

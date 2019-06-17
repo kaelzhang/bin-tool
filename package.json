@@ -46,6 +46,7 @@
     "nyc": "^14.1.1"
   },
   "dependencies": {
+    "cliui": "^5.0.0",
     "core-util-is": "^1.0.2",
     "err-object": "^5.1.2",
     "minimist": "^1.2.0",

@@ -1,6 +1,7 @@
 const {defaults} = require('skema')
 const minimist = require('minimist')
 const {isObject, isArray, isString} = require('core-util-is')
+const UI = require('cliui')
 
 const error = require('./error')
 
@@ -22,7 +23,7 @@ const {
 //     async default () {
 
 //     },
-//     // coerce: v => path.resolve(v)
+//     async set: v => path.resolve(v)
 //   }
 // }
 // ``
@@ -44,12 +45,35 @@ const parseAlias = (alias, name) => {
 }
 
 module.exports = class Options {
-  constructor (rawOptions) {
+  constructor () {
+    this._aliases = Object.create(null)
+    this._options = null
+    this._shape = null
+    this._usage = undefined
+    this._commands = Object.create(null)
+    this._offset = 0
+  }
+
+  offset (offset) {
+    this._offset = offset
+    return this
+  }
+
+  command (name, description) {
+    this._commands[name] = description
+    return this
+  }
+
+  usage (usage) {
+    this._usage = usage
+    return this
+  }
+
+  options (rawOptions) {
     if (!isObject(rawOptions)) {
       throw error('INVALID_OPTIONS', rawOptions)
     }
 
-    this._aliases = Object.create(null)
     const argvShape = Object.create(null)
     const options = Object.create(null)
 
@@ -84,6 +108,8 @@ module.exports = class Options {
 
     this._options = options
     this._shape = shape(argvShape)
+
+    return this
   }
 
   _addAlias (name, aliases) {
@@ -96,9 +122,21 @@ module.exports = class Options {
     }
   }
 
+  defined (name) {
+    return name in this._options
+  }
+
   async parse (rawArgv) {
     const argv = minimist(rawArgv)
+    if (!this._shape) {
+      return argv
+    }
+
     return this._shape.from(argv)
+  }
+
+  helpInfo () {
+
   }
 
   // npmw [command]
@@ -110,7 +148,10 @@ module.exports = class Options {
   // Global Options:
   //   -h, --help         Show help    [boolean]
   //   -V, --version, -v  Show version number
-  showHelp () {
+
+  // Returns `string`
+  help () {
+    const ui = UI()
 
   }
 }
