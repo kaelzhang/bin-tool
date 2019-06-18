@@ -15,15 +15,10 @@ const VERSION = symbol('version')
 const DISPATCH = symbol('dispatch')
 
 module.exports = class Command {
-  constructor (rawArgv) {
-    /**
-     * original argument
-     * @type {Array}
-     */
-    this.rawArgv = rawArgv || process.argv.slice(2)
-    // debug('[%s] origin argument `%s`', this.constructor.name, this.rawArgv.join(' '))
+  constructor (offset = 2) {
+    this[ARGV] = new Argv().offset(offset)
 
-    this[ARGV] = new Argv()
+    this.offset = offset
 
     // <commandName, Command>
     this[COMMANDS] = new Map()
@@ -180,7 +175,7 @@ module.exports = class Command {
       const rawArgv = this.rawArgv.slice()
       rawArgv.splice(rawArgv.indexOf(commandName), 1)
 
-      const command = new SubCommand(rawArgv)
+      const command = new SubCommand(this.offset + 1)
       await command[DISPATCH]()
       return
     }
@@ -190,8 +185,13 @@ module.exports = class Command {
       this[ARGV].command(name, SubCommand.prototype.description)
     }
 
-    const {context} = this
-    context.argv = argv
+    const context = {
+      cwd: process.cwd(),
+      rawArgv: this.rawArgv,
+      argv
+    }
+
+    log('context: %j', context)
 
     await this.run(context)
   }

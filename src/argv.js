@@ -1,3 +1,4 @@
+const path = require('path')
 const {defaults, BASIC_TYPES} = require('skema')
 const minimist = require('minimist')
 const {
@@ -48,7 +49,7 @@ const parseAlias = (alias, name) => {
 }
 
 const interpolatedCommand = (string, command) =>
-  string.replace(/\$0/g, command)
+  string.replace(/\$command/g, command)
 
 const printOptionsKey = key => key === 1
   ? `-${key}`
@@ -65,7 +66,7 @@ module.exports = class Argv {
     this._shape = null
     this._usage = undefined
     this._commands = Object.create(null)
-    this._offset = 0
+    this._offset = 2
     // this._version = undefined
   }
 
@@ -75,7 +76,7 @@ module.exports = class Argv {
   // }
 
   offset (offset) {
-    if (isNumber(offset)) {
+    if (!isNumber(offset)) {
       throw error('INVALID_OFFSET', offset)
     }
 
@@ -86,6 +87,13 @@ module.exports = class Argv {
   command (name, description) {
     this._commands[name] = description || ''
     return this
+  }
+
+  get commandName () {
+    return process.argv
+    .slice(1, this._offset)
+    .map(s => path.basename(s, '.js'))
+    .join(' ')
   }
 
   usage (usage) {
@@ -179,7 +187,7 @@ module.exports = class Argv {
   }
 
   _getDefaultUsage (command) {
-    let usage = `Usage: ${command}`
+    let usage = command
 
     if (Object.keys(this._commands).length) {
       usage += ' [command]'
@@ -192,15 +200,16 @@ module.exports = class Argv {
     return usage
   }
 
-  _getUsage (command) {
+  _getUsage () {
     let rawUsage = this._usage
+    const {commandName} = this
 
     if (!rawUsage) {
-      return this._getDefaultUsage(command)
+      return this._getDefaultUsage(commandName)
     }
 
     if (isString(rawUsage)) {
-      return interpolatedCommand(rawUsage, command)
+      return interpolatedCommand(rawUsage, commandName)
     }
 
     rawUsage = rawUsage()
@@ -208,7 +217,7 @@ module.exports = class Argv {
       throw error('INVALID_USAGE_RETURN_TYPE', rawUsage)
     }
 
-    return interpolatedCommand(rawUsage, command)
+    return interpolatedCommand(rawUsage, commandName)
   }
 
   // npmw [command]
@@ -223,10 +232,9 @@ module.exports = class Argv {
 
   // Returns `string`
   help () {
-    const command = process.argv.splice(this._offset)[0]
     const ui = UI()
 
-    ui.div(this._getUsage(command))
+    ui.div(this._getUsage())
 
     if (this._userOptions) {
       ui.div({
@@ -257,5 +265,7 @@ module.exports = class Argv {
         ui.div(...cells)
       }
     }
+
+    return ui.toString()
   }
 }
