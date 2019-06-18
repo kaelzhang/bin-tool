@@ -236,10 +236,24 @@ module.exports = class Argv {
 
     ui.div(this._getUsage())
 
+    if (Object.keys(this._commands).length) {
+      ui.div({
+        text: 'Commands:',
+        padding: [1, 0, 0, 0]
+      })
+
+      for (const [command, description] of Object.entries(this._commands)) {
+        ui.div({
+          text: command,
+          padding: [0, 2, 0, 2]
+        }, description)
+      }
+    }
+
     if (this._userOptions) {
       ui.div({
-        test: 'Options:',
-        padding: [2, 0, 2, 0]
+        text: 'Options:',
+        padding: [1, 0, 0, 0]
       })
 
       for (const [key, {
@@ -254,7 +268,7 @@ module.exports = class Argv {
         const cells = [{
           text: printOptionKeys(key, aliases),
           width: 20,
-          padding: [0, 4, 0, 2]
+          padding: [0, 2, 0, 2]
         }, {
           text: description,
           width: 20
