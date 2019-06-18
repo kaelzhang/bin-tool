@@ -67,7 +67,13 @@ module.exports = class Argv {
     this._usage = undefined
     this._commands = Object.create(null)
     this._offset = 2
+    this._rawArgv = []
     // this._version = undefined
+  }
+
+  argv (argv) {
+    this._rawArgv = argv
+    return this
   }
 
   // version (version) {
@@ -90,7 +96,7 @@ module.exports = class Argv {
   }
 
   get commandName () {
-    return process.argv
+    return this._rawArgv
     .slice(1, this._offset)
     .map(s => path.basename(s, '.js'))
     .join(' ')
@@ -176,8 +182,8 @@ module.exports = class Argv {
     return name in this._options
   }
 
-  async parse (argv = process.argv) {
-    const parsed = minimist(argv.slice(this._offset))
+  async parse () {
+    const parsed = minimist(this._rawArgv.slice(this._offset))
 
     if (!this._shape) {
       return parsed
@@ -246,7 +252,10 @@ module.exports = class Argv {
         ui.div({
           text: command,
           padding: [0, 2, 0, 2]
-        }, description)
+        }, {
+          text: description,
+          padding: [0, 2, 0, 0]
+        })
       }
     }
 

@@ -16,7 +16,9 @@ const DISPATCH = symbol('dispatch')
 
 module.exports = class Command {
   constructor (offset = 2) {
-    this[ARGV] = new Argv().offset(offset)
+    this[ARGV] = new Argv()
+    .argv(process.argv)
+    .offset(offset)
 
     this.offset = offset
 
@@ -160,7 +162,7 @@ module.exports = class Command {
 
   async [DISPATCH] () {
     // get parsed argument without handling helper and version
-    const argv = await this[ARGV].parse(this.rawArgv)
+    const argv = await this[ARGV].parse()
 
     if (argv.version && this.version) {
       console.log(this.version)

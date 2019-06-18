@@ -21,7 +21,11 @@
     "url": "git://github.com/kaelzhang/bin-tool.git"
   },
   "keywords": [
-    "bin-tool"
+    "bin-tool",
+    "command-line",
+    "cli",
+    "bin",
+    "sub-command"
   ],
   "engines": {
     "node": ">= 6"
