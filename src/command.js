@@ -171,12 +171,11 @@ module.exports = class Command {
 
     const commandName = argv._[0]
 
+    log('sub command: %s', commandName)
+
     // if sub command exist
     if (this[COMMANDS].has(commandName)) {
       const SubCommand = this[COMMANDS].get(commandName)
-      const rawArgv = this.rawArgv.slice()
-      rawArgv.splice(rawArgv.indexOf(commandName), 1)
-
       const command = new SubCommand(this.offset + 1)
       await command[DISPATCH]()
       return
