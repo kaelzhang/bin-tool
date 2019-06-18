@@ -182,8 +182,19 @@ module.exports = class Argv {
     return name in this._options
   }
 
+  _applyAliases (parsed) {
+    for (const [alias, key] of Object.entries(this._aliases)) {
+      if ((alias in parsed) && !(key in parsed)) {
+        parsed[key] = parsed[alias]
+        delete parsed[alias]
+      }
+    }
+  }
+
   async parse () {
     const parsed = minimist(this._rawArgv.slice(this._offset))
+
+    this._applyAliases(parsed)
 
     if (!this._shape) {
       return parsed

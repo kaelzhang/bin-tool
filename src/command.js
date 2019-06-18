@@ -124,6 +124,7 @@ module.exports = class Command {
    * @protected
    */
   errorHandler (err) {
+    console.error(err.message)
     log(err.stack)
     process.exit(1)
   }
