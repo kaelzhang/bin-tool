@@ -90,11 +90,22 @@ module.exports = class Argv {
     return this
   }
 
-  command (name, description) {
-    this._commands[name] = description || ''
+  command (name, {description, alias}) {
+    this._commands[name] = {
+      description: description || '',
+      alias
+    }
+
     return this
   }
 
+  // ['/usr/local/bin/node', '/path/to/npm', 'create', '--options']
+  //                                          ^
+  // -> 'npm'
+
+  // ['/usr/local/bin/node', '/path/to/npm', 'create', '--options']
+  //                                                    ^
+  // -> 'npm create'
   get commandName () {
     return this._rawArgv
     .slice(1, this._offset)
@@ -259,9 +270,12 @@ module.exports = class Argv {
         padding: [1, 0, 0, 0]
       })
 
-      for (const [command, description] of Object.entries(this._commands)) {
+      for (const [command, {
+        description,
+        alias
+      }] of Object.entries(this._commands)) {
         ui.div({
-          text: command,
+          text: [command].concat(alias).join(', '),
           padding: [0, 2, 0, 2]
         }, {
           text: description,

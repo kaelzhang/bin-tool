@@ -83,7 +83,10 @@ module.exports = class Command {
         'command class should be sub class of Command')
     }
 
-    this[COMMANDS].set(name, target)
+    this[COMMANDS].set(name, {
+      Command: target,
+      alias: new Set()
+    })
   }
 
   /**
@@ -95,7 +98,7 @@ module.exports = class Command {
     assert(alias, 'alias command name is required')
     assert(this[COMMANDS].has(name), `${name} should be added first`)
     // debug('[%s] set `%s` as alias of `%s`', this.constructor.name, alias, name)
-    this[COMMANDS].set(alias, this[COMMANDS].get(name))
+    this[COMMANDS].get(name).alias.add(alias)
   }
 
   /**
@@ -129,10 +132,7 @@ module.exports = class Command {
     process.exit(1)
   }
 
-  /**
-   * print help message to console
-   * @param {String} [level=log] - console level
-   */
+  // print help message to console
   showHelp () {
     console.log(this[ARGV].help())
   }
@@ -176,15 +176,24 @@ module.exports = class Command {
 
     // if sub command exist
     if (this[COMMANDS].has(commandName)) {
-      const SubCommand = this[COMMANDS].get(commandName)
+      const {
+        Command: SubCommand
+      } = this[COMMANDS].get(commandName)
       const command = new SubCommand(this.offset + 1)
       await command[DISPATCH]()
       return
     }
 
     // register command for printing
-    for (const [name, SubCommand] of this[COMMANDS].entries()) {
-      this[ARGV].command(name, SubCommand.prototype.description)
+    for (const [name, {
+      Command: SubCommand,
+      alias
+    }] of this[COMMANDS].entries()) {
+      const {description} = SubCommand.prototype
+      this[ARGV].command(name, {
+        description,
+        alias: [...alias]
+      })
     }
 
     const context = {
