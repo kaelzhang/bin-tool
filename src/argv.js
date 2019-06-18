@@ -1,4 +1,4 @@
-const {defaults} = require('skema')
+const {defaults, BASIC_TYPES} = require('skema')
 const minimist = require('minimist')
 const {
   isObject, isArray, isString, isFunction, isNumber
@@ -11,7 +11,8 @@ const {
   shape,
   any
 } = defaults({
-  async: true
+  async: true,
+  types: BASIC_TYPES.LOOSE
 })
 
 // ```js
@@ -56,7 +57,7 @@ const printOptionsKey = key => key === 1
 const printOptionKeys = (key, aliases) =>
   [key].concat(aliases).map(printOptionsKey).join(', ')
 
-module.exports = class Options {
+module.exports = class Argv {
   constructor () {
     this._aliases = Object.create(null)
     this._options = null
@@ -65,13 +66,13 @@ module.exports = class Options {
     this._usage = undefined
     this._commands = Object.create(null)
     this._offset = 0
-    this._version = undefined
+    // this._version = undefined
   }
 
-  version (version) {
-    this._version = version
-    return this
-  }
+  // version (version) {
+  //   this._version = version
+  //   return this
+  // }
 
   offset (offset) {
     if (isNumber(offset)) {
@@ -83,7 +84,7 @@ module.exports = class Options {
   }
 
   command (name, description) {
-    this._commands[name] = description
+    this._commands[name] = description || ''
     return this
   }
 
@@ -169,6 +170,7 @@ module.exports = class Options {
 
   async parse (argv = process.argv) {
     const parsed = minimist(argv.slice(this._offset))
+
     if (!this._shape) {
       return parsed
     }

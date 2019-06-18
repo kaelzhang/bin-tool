@@ -20,4 +20,6 @@ TE('INVALID_USAGE_RETURN_TYPE', 'usage of function type must return a string')
 E('ALIAS_CONFLICT',
   '"%s" is already an alias of "%s"')
 
+E('INVALID_LOAD_PATH', '"%s" should exist and be a directory')
+
 module.exports = error
