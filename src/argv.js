@@ -76,11 +76,6 @@ module.exports = class Argv {
     return this
   }
 
-  // version (version) {
-  //   this._version = version
-  //   return this
-  // }
-
   offset (offset) {
     if (!isNumber(offset)) {
       throw error('INVALID_OFFSET', offset)
@@ -248,6 +243,8 @@ module.exports = class Argv {
     return interpolatedCommand(rawUsage, commandName)
   }
 
+  // TODO: layout options
+
   // npmw [command]
 
   // Commands:
@@ -305,7 +302,7 @@ module.exports = class Argv {
           padding: [0, 2, 0, 2]
         }, {
           text: description,
-          width: 20
+          width: 50
         }]
 
         // TODO: type and required
