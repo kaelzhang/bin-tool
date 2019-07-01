@@ -5,7 +5,6 @@ const path = require('path')
 
 const error = require('./error')
 const Argv = require('./argv')
-// const helper = require('./helper')
 
 const symbol = name => Symbol(`bin-tool:${name}`)
 
@@ -26,23 +25,19 @@ module.exports = class Command {
     this[COMMANDS] = new Map()
   }
 
-  /**
-   * command handler, could be async function / normal function
-   * @param {Object} context - context object
-   * @param {String} context.cwd - process.cwd()
-   * @param {Object} context.argv - parsed argv object
-   * @param {Array} context.rawArgv - the raw argv, `[ "--baseDir=simple" ]`
-   * @protected
-   */
+  // command handler, could be async function / normal function
+  // @param {Object} context - context object
+  // @param {String} context.cwd - process.cwd()
+  // @param {Object} context.argv - parsed argv object
+  // @param {Array} context.rawArgv - the raw argv, `[ "--baseDir=simple" ]`
+  // @protected
   run () {
     this.showHelp()
   }
 
-  /**
-   * load sub commands
-   * @param {String} fullPath - the command directory
-   * @example `load(path.join(__dirname, 'command'))`
-   */
+  // load sub commands
+  // @param {String} fullPath - the command directory
+  // @example `load(path.join(__dirname, 'command'))`
   load (fullPath) {
     if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isDirectory()) {
       throw error('INVALID_LOAD_PATH', fullPath)
@@ -63,12 +58,10 @@ module.exports = class Command {
     //   this.constructor.name, names, fullPath)
   }
 
-  /**
-   * add sub command
-   * @param {String} name - a command name
-   * @param {String|Class} target - special file path (must contains ext) or Command Class
-   * @example `add('test', path.join(__dirname, 'test_command.js'))`
-   */
+  // add sub command
+  // @param {String} name - a command name
+  // @param {String|Class} target - special file path (must contains ext) or Command Class
+  // @example `add('test', path.join(__dirname, 'test_command.js'))`
   add (name, target) {
     assert(name, `${name} is required`)
     if (!(target.prototype instanceof Command)) {
@@ -89,11 +82,9 @@ module.exports = class Command {
     })
   }
 
-  /**
-   * alias an existing command
-   * @param {String} alias - alias command
-   * @param {String} name - exist command
-   */
+  // Alias an existing command
+  // @param {String} alias - alias command
+  // @param {String} name - exist command
   alias (alias, name) {
     assert(alias, 'alias command name is required')
     assert(this[COMMANDS].has(name), `${name} should be added first`)
@@ -101,9 +92,7 @@ module.exports = class Command {
     this[COMMANDS].get(name).alias.add(alias)
   }
 
-  /**
-   * start point of bin process
-   */
+  // start point of bin process
   async start () {
     // co(function* () {
     //   // replace `--get-yargs-completions` to our KEY, so yargs will not block our DISPATCH
@@ -121,11 +110,9 @@ module.exports = class Command {
     }
   }
 
-  /**
-   * default error hander
-   * @param {Error} err - error object
-   * @protected
-   */
+  // default error hander
+  // @param {Error} err - error object
+  // @protected
   errorHandler (err) {
     console.error(err.message)
     log(err.stack)
@@ -137,18 +124,14 @@ module.exports = class Command {
     console.log(this[ARGV].help())
   }
 
-  /**
-   * shortcut for yargs.options
-   * @param  {Object} opt - an object set to `yargs.options`
-   */
+  // shortcut for yargs.options
+  // @param  {Object} opt - an object set to `yargs.options`
   set options (options) {
     this[ARGV].options(options)
   }
 
-  /**
-   * shortcut for yargs.usage
-   * @param  {String} usage - usage info
-   */
+  // shortcut for yargs.usage
+  // @param  {String} usage - usage info
   set usage (usage) {
     this[ARGV].usage(usage)
   }
