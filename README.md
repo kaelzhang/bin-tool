@@ -25,9 +25,7 @@ $ npm i bin-tool
 
 ## Usage
 
-```js
-const bin_tool = require('bin-tool')
-```
+See [example](example)
 
 ## License
 

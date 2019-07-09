@@ -2,6 +2,7 @@ const log = require('util').debuglog('bin-tool')
 const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
+const {isNumber} = require('core-util-is')
 
 const error = require('./error')
 const Argv = require('./argv')
@@ -10,19 +11,37 @@ const symbol = name => Symbol(`bin-tool:${name}`)
 
 const COMMANDS = symbol('commands')
 const ARGV = symbol('argv')
+const ARGV_VALUE = symbol('argv-value')
 const VERSION = symbol('version')
 const DISPATCH = symbol('dispatch')
+const OFFSET = symbol('offset')
+const SUB_COMMAND = symbol('sub-command')
 
 module.exports = class Command {
-  constructor (offset = 2) {
-    this[ARGV] = new Argv()
-    .argv(process.argv)
-    .offset(offset)
-
-    this.offset = offset
-
+  constructor () {
     // <commandName, Command>
     this[COMMANDS] = new Map()
+    this[OFFSET] = 2
+  }
+
+  get [ARGV] () {
+    return this[ARGV_VALUE] || (
+      this[ARGV_VALUE] = new Argv()
+      .argv(process.argv)
+      .offset(this[OFFSET])
+    )
+  }
+
+  set offset (offset) {
+    if (!isNumber(offset)) {
+      throw error('INVALID_OFFSET', offset)
+    }
+
+    if (this.constructor[SUB_COMMAND]) {
+      throw error('SUB_OFFSET_NOT_ALLOWED')
+    }
+
+    this[OFFSET] = offset
   }
 
   // command handler, could be async function / normal function
@@ -80,6 +99,8 @@ module.exports = class Command {
       Command: target,
       alias: new Set()
     })
+
+    return this
   }
 
   // Alias an existing command
@@ -90,6 +111,8 @@ module.exports = class Command {
     assert(this[COMMANDS].has(name), `${name} should be added first`)
     // debug('[%s] set `%s` as alias of `%s`', this.constructor.name, alias, name)
     this[COMMANDS].get(name).alias.add(alias)
+
+    return this
   }
 
   // start point of bin process
@@ -162,7 +185,15 @@ module.exports = class Command {
       const {
         Command: SubCommand
       } = this[COMMANDS].get(commandName)
-      const command = new SubCommand(this.offset + 1)
+
+      // Mark as sub command
+      SubCommand[SUB_COMMAND] = true
+      const command = new SubCommand()
+      // Set the offset
+      command[OFFSET] = this[OFFSET] + 1
+
+      delete SubCommand[SUB_COMMAND]
+
       await command[DISPATCH]()
       return
     }

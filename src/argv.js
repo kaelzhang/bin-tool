@@ -2,7 +2,7 @@ const path = require('path')
 const {defaults, BASIC_TYPES} = require('skema')
 const minimist = require('minimist')
 const {
-  isObject, isArray, isString, isFunction, isNumber
+  isObject, isArray, isString, isFunction
 } = require('core-util-is')
 const UI = require('cliui')
 
@@ -68,7 +68,6 @@ module.exports = class Argv {
     this._commands = Object.create(null)
     this._offset = 2
     this._rawArgv = []
-    // this._version = undefined
   }
 
   argv (argv) {
@@ -77,10 +76,6 @@ module.exports = class Argv {
   }
 
   offset (offset) {
-    if (!isNumber(offset)) {
-      throw error('INVALID_OFFSET', offset)
-    }
-
     this._offset = offset
     return this
   }
@@ -142,15 +137,20 @@ module.exports = class Argv {
       this._addAlias(name, aliases)
 
       const required = skema.required === true
+      const isEnumerable = enumerable !== false
 
       options[name] = {
-        enumerable: enumerable !== false,
+        // Defaults to true
+        enumerable: isEnumerable,
         description,
         aliases,
         required
       }
 
-      argvShape[name] = skema
+      argvShape[name] = {
+        ...skema,
+        enumerable: isEnumerable
+      }
 
       if (!skema.type) {
         skema.type = any()
