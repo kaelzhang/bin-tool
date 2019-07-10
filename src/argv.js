@@ -23,7 +23,7 @@ const {
 //     type: 'string',
 //     alias: ['f'],
 //     alias: 'f'
-//     description: 'specify the current used workstation',
+//     description: 'specify the current used workspace',
 //     async default () {
 
 //     },
@@ -273,6 +273,7 @@ module.exports = class Argv {
       }] of Object.entries(this._commands)) {
         ui.div({
           text: [command].concat(alias).join(', '),
+          width: 30,
           padding: [0, 2, 0, 2]
         }, {
           text: description,

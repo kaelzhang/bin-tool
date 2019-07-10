@@ -7,7 +7,7 @@ const {Command} = require('bin-tool')
 
 module.exports = class extends Command {
   get description () {
-    return 'add a project directory into a workstation'
+    return 'start the server'
   }
 
   constructor () {
