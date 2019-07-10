@@ -17,6 +17,10 @@ module.exports = class extends Command {
         description: 'verbose output'
       }
     }
+
+    if (process.env.SUB_OFFSET) {
+      this.offset = 3
+    }
   }
 
   run ({

@@ -17,6 +17,7 @@ const run = (type, argv, env = {}) => {
 
   return new Promise((resolve, reject) => {
     let data = ''
+    let err = ''
 
     const child = fork(commander, [options], {
       stdio: 'pipe',
@@ -31,11 +32,15 @@ const run = (type, argv, env = {}) => {
         return resolve(removesDebug(data))
       }
 
-      reject()
+      reject(new Error(err))
     })
 
     child.stdout.on('data', chunk => {
       data += chunk
+    })
+
+    child.stderr.on('data', chunk => {
+      err += chunk
     })
   })
 }
