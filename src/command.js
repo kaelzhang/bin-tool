@@ -101,8 +101,7 @@ module.exports = class Command {
       }
     }
 
-    // debug('[%s] loaded command `%s` from directory `%s`',
-    //   this.constructor.name, names, fullPath)
+    return this
   }
 
   // add sub command

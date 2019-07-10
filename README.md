@@ -27,6 +27,102 @@ $ npm i bin-tool
 
 See [example](example)
 
+```
+/path/to/project
+    |-- cli.js
+    |-- commands
+        |-- serve.js
+```
+
+cli.js
+```js
+const {Command} = require('bin-tool')
+const path = require('path')
+
+class Bin extends Command {
+  constructor () {
+    this.load(path.join(__dirname, 'commands'))
+  }
+}
+
+new Bin().start()
+```
+
+serve.js
+
+```js
+const {Command} = require('bin-tool')
+
+module.exports = class extends Command {
+  constructor () {
+    this.options = {
+      port: {
+        type: 'number',
+        default: 3000,
+        description: 'port to bind on'
+      }
+    }
+  }
+
+  run ({argv}) {
+    serve(argv.port)
+  }
+}
+```
+
+## new Command(argv = process.argv)
+
+- **argv** `Array` specify the process argv
+
+### load(path): this
+
+- **path** `string` the full absolute path of the directory that contains sub commands
+
+Load subtle commands
+
+### setter: offset `number`
+
+Set the offset of `process.argv` defaults to `2`
+
+### setter: options `object`
+
+Set the options of the command
+
+### setter: usage `string`
+
+Set the usage of the command
+
+### setter: version `string`
+
+Set the semantic version of the command
+
+### override: run({cwd, argv, rawArgv}): void | Promise
+
+- **cwd** the current working directory which equals to `process.cwd()`
+- **argv** `object` the parsed argv object
+- **rawArgv** `Array` the raw process argv
+
+The method to override to define the behavior of the current command. If the method is not overridden, it will [`showHelp()`](#showhelp)
+
+### alias(alias, commandName): this
+
+- **alias** `string` the alias name of the command
+- **commandName** `string` the original command name
+
+Add an alias name for a command `commandName`
+
+### async start(): void
+
+Start the command
+
+### errHandler(err)
+
+Handle an error
+
+### showHelp()
+
+Print help message of the current command to stdout
+
 ## License
 
 [MIT](LICENSE)
