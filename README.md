@@ -25,13 +25,14 @@ $ npm i bin-tool
 
 ## Usage
 
-See [example](example)
+For example with annotations, see [example](example)
 
 ```
 /path/to/project
     |-- cli.js
     |-- commands
         |-- serve.js
+    |-- package.json
 ```
 
 cli.js
@@ -70,9 +71,27 @@ module.exports = class extends Command {
 }
 ```
 
+package.json
+
+```json
+{
+  "name": "bin",
+  "bin": {
+    "bin": "./cli"
+  }
+}
+```
+
+```sh
+npm link
+bin serve --port 8080
+```
+
 ## new Command(argv = process.argv)
 
 - **argv** `Array` specify the process argv
+
+In most cases, we leave the `argv` unspecified to use the default value `process.argv` except for test purpose.
 
 ### load(path): this
 
