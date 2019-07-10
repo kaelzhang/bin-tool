@@ -1,15 +1,6 @@
-const path = require('path')
-const {Command} = require('bin-tool')
-
-// ```sh
-// example serve --port 3001 --verbose
-// ```
+const {Command} = require('../../..')
 
 module.exports = class extends Command {
-  get description () {
-    return 'add a project directory into a workstation'
-  }
-
   constructor () {
     super()
 
@@ -28,13 +19,15 @@ module.exports = class extends Command {
     }
   }
 
-  async run ({
-    argv
-  }) {
-    if (argv.verbose) {
-      console.info(`start server on :${argv.port}`)
+  run ({
+    argv: {
+      port,
+      verbose
     }
-
-    serve(argv.port)
+  }) {
+    console.log(JSON.stringify({
+      port,
+      verbose
+    }))
   }
 }

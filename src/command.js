@@ -11,25 +11,41 @@ const symbol = name => Symbol(`bin-tool:${name}`)
 
 const COMMANDS = symbol('commands')
 const ARGV = symbol('argv')
+const PROCESS_ARGV = symbol('process-argv')
 const ARGV_VALUE = symbol('argv-value')
 const VERSION = symbol('version')
 const DISPATCH = symbol('dispatch')
 const OFFSET = symbol('offset')
 const SUB_COMMAND = symbol('sub-command')
+const OPTIONS = symbol('options')
+const USAGE = symbol('usage')
 
 module.exports = class Command {
-  constructor () {
+  constructor (argv = process.argv) {
     // <commandName, Command>
     this[COMMANDS] = new Map()
     this[OFFSET] = 2
+    this[PROCESS_ARGV] = argv
   }
 
   get [ARGV] () {
-    return this[ARGV_VALUE] || (
-      this[ARGV_VALUE] = new Argv()
-      .argv(process.argv)
-      .offset(this[OFFSET])
-    )
+    if (this[ARGV_VALUE]) {
+      return this[ARGV_VALUE]
+    }
+
+    const arg = this[ARGV_VALUE] = new Argv()
+    .argv(this[PROCESS_ARGV])
+    .offset(this[OFFSET])
+
+    if (this[OPTIONS]) {
+      arg.options(this[OPTIONS])
+    }
+
+    if (this[USAGE]) {
+      arg.usage(this[USAGE])
+    }
+
+    return arg
   }
 
   set offset (offset) {
@@ -42,6 +58,18 @@ module.exports = class Command {
     }
 
     this[OFFSET] = offset
+  }
+
+  // shortcut for yargs.options
+  // @param  {Object} opt - an object set to `yargs.options`
+  set options (options) {
+    this[OPTIONS] = options
+  }
+
+  // shortcut for yargs.usage
+  // @param  {String} usage - usage info
+  set usage (usage) {
+    this[USAGE] = usage
   }
 
   // command handler, could be async function / normal function
@@ -147,18 +175,6 @@ module.exports = class Command {
     console.log(this[ARGV].help())
   }
 
-  // shortcut for yargs.options
-  // @param  {Object} opt - an object set to `yargs.options`
-  set options (options) {
-    this[ARGV].options(options)
-  }
-
-  // shortcut for yargs.usage
-  // @param  {String} usage - usage info
-  set usage (usage) {
-    this[ARGV].usage(usage)
-  }
-
   set version (ver) {
     this[VERSION] = ver
   }
@@ -170,6 +186,7 @@ module.exports = class Command {
   async [DISPATCH] () {
     // get parsed argument without handling helper and version
     const argv = await this[ARGV].parse()
+    log('argv: %j', argv)
 
     if (argv.version && this.version) {
       console.log(this.version)
@@ -191,6 +208,7 @@ module.exports = class Command {
       const command = new SubCommand()
       // Set the offset
       command[OFFSET] = this[OFFSET] + 1
+      command[PROCESS_ARGV] = this[PROCESS_ARGV]
 
       delete SubCommand[SUB_COMMAND]
 
