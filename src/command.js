@@ -125,6 +125,9 @@ module.exports = class Command {
 
     this[COMMANDS].set(name, {
       Command: target,
+      // The main name of the command
+      name,
+      // The alias names of the command
       alias: new Set()
     })
 
@@ -135,10 +138,19 @@ module.exports = class Command {
   // @param {String} alias - alias command
   // @param {String} name - exist command
   alias (alias, name) {
+    const commands = this[COMMANDS]
+
     assert(alias, 'alias command name is required')
-    assert(this[COMMANDS].has(name), `${name} should be added first`)
-    // debug('[%s] set `%s` as alias of `%s`', this.constructor.name, alias, name)
-    this[COMMANDS].get(name).alias.add(alias)
+    assert(commands.has(name), `${name} should be added first`)
+
+    if (commands.has(alias)) {
+      throw error('COMMAND_ALIAS_CONFLICT', alias, commands.get(alias).name)
+    }
+
+    const major = commands.get(name)
+    major.alias.add(alias)
+
+    commands.set(alias, major)
 
     return this
   }
@@ -219,13 +231,17 @@ module.exports = class Command {
     // register command for printing
     for (const [name, {
       Command: SubCommand,
+      name: majorName,
       alias
     }] of this[COMMANDS].entries()) {
-      const {description} = SubCommand.prototype
-      this[ARGV].command(name, {
-        description,
-        alias: [...alias]
-      })
+      if (name === majorName) {
+        const {description} = SubCommand.prototype
+
+        this[ARGV].command(name, {
+          description,
+          alias: [...alias]
+        })
+      }
     }
 
     const context = {

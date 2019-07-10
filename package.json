@@ -1,7 +1,7 @@
 {
   "name": "bin-tool",
   "version": "1.0.0",
-  "description": "The utility to create powerful command line tools",
+  "description": "The utility tool to create powerful command line tools",
   "main": "src/index.js",
   "scripts": {
     "test": "NODE_DEBUG=bin-tool nyc ava --timeout=10s --verbose",

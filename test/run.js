@@ -4,18 +4,12 @@ const {fork} = require('child_process')
 const commander = path.join(__dirname, 'commander.js')
 
 const removesDebug = output => output
-.split(/\r|\n/g)
-.filter(line => {
-  if (!line) {
-    return false
-  }
-
-  return !line.startsWith('BIN-TOOL')
-})
-.join('\n')
 .trim()
+.split(/\r|\n/g)
+.filter(line => !line.startsWith('BIN-TOOL'))
+.join('\n')
 
-const run = (type, argv) => {
+const run = (type, argv, env = {}) => {
   const options = JSON.stringify({
     type,
     argv: ['node', 'bin', ...argv]
@@ -25,7 +19,11 @@ const run = (type, argv) => {
     let data = ''
 
     const child = fork(commander, [options], {
-      stdio: 'pipe'
+      stdio: 'pipe',
+      env: {
+        ...process.env,
+        ...env
+      }
     })
 
     child.on('close', code => {

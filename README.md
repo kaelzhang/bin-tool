@@ -15,7 +15,7 @@
 
 # bin-tool
 
-The utility to create powerful command line tools
+The utility tool to create powerful command line tools
 
 ## Install
 

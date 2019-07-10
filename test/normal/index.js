@@ -3,5 +3,6 @@ module.exports = Command => class extends Command {
     super(argv)
 
     this.load(require('path').join(__dirname, 'command'))
+    this.alias('lg', 'log')
   }
 }
