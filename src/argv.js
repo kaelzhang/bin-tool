@@ -143,14 +143,10 @@ module.exports = class Argv {
         // Defaults to true
         enumerable: isEnumerable,
         description,
-        aliases,
-        required
+        aliases
       }
 
-      argvShape[name] = {
-        ...skema,
-        enumerable: isEnumerable
-      }
+      argvShape[name] = skema
 
       if (!skema.type) {
         skema.type = any()
