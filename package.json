@@ -1,6 +1,6 @@
 {
   "name": "bin-tool",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "The utility tool to create powerful command line tools",
   "main": "src/index.js",
   "scripts": {

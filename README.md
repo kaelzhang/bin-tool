@@ -123,6 +123,8 @@ Set the semantic version of the command
 
 The method to override to define the behavior of the current command. If the method is not overridden, it will [`showHelp()`](#showhelp)
 
+The `argv` object has a special `argv.__` property which contains the arguments after `'--'`
+
 ### alias(alias, commandName): this
 
 - **alias** `string` the alias name of the command

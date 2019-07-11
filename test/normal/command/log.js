@@ -26,9 +26,19 @@ module.exports = class extends Command {
   run ({
     argv: {
       port,
-      verbose
+      verbose,
+      __
     }
   }) {
+    if (process.env.DOUBLE_SLASH) {
+      console.log(JSON.stringify({
+        port,
+        verbose,
+        __
+      }))
+      return
+    }
+
     console.log(JSON.stringify({
       port,
       verbose
