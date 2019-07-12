@@ -183,7 +183,13 @@ module.exports = class Argv {
   }
 
   defined (name) {
-    return name in this._options
+    return this._options
+      ? name in this._options
+      : false
+  }
+
+  includedInRaw (...args) {
+    return args.some(arg => this._rawArgv.includes(arg))
   }
 
   _applyAliases (parsed) {

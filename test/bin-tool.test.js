@@ -25,6 +25,34 @@ const CASES = [
     }
   ],
   [
+    // description
+    '--version',
+    // type, args
+    ['normal', ['--version']],
+    // expected
+    '1.0.0'
+  ],
+  [
+    // description
+    'sub --version',
+    // type, args
+    ['normal', ['log', '--version']],
+    // expected
+    '2.0.0'
+  ],
+  [
+    // description
+    'sub --version with custom option',
+    // type, args
+    ['normal', ['log', '--version'], {
+      CUSTOM_VERSION: 'true'
+    }],
+    {
+      port: 3000,
+      verbose: false
+    }
+  ],
+  [
     '--',
     ['normal', ['log', '--', '--no-limit'], {
       DOUBLE_SLASH: 'true'

@@ -4,7 +4,7 @@ module.exports = class extends Command {
   constructor () {
     super()
 
-    this.options = {
+    const options = {
       port: {
         type: 'number',
         default: 3000,
@@ -17,6 +17,16 @@ module.exports = class extends Command {
         description: 'verbose output'
       }
     }
+
+    if (process.env.CUSTOM_VERSION) {
+      options.version = {
+        type: 'boolean'
+      }
+    }
+
+    this.options = options
+
+    this.version = '2.0.0'
 
     if (process.env.SUB_OFFSET) {
       this.offset = 3

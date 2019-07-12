@@ -196,18 +196,15 @@ module.exports = class Command {
 
   async [DISPATCH] () {
     // get parsed argument without handling helper and version
-    const argv = await this[ARGV].parse()
+    const argvManager = this[ARGV]
+    const argv = await argvManager.parse()
     log('argv: %j', argv)
-
-    if (argv.version && this.version) {
-      console.log(this.version)
-      return
-    }
 
     const commandName = argv._[0]
 
     log('sub command: %s', commandName)
 
+    // Test sub command name first
     // if sub command exist
     if (this[COMMANDS].has(commandName)) {
       const {
@@ -224,6 +221,27 @@ module.exports = class Command {
       delete SubCommand[SUB_COMMAND]
 
       await command[DISPATCH]()
+      return
+    }
+
+    // User can override the behavior by define a version option
+    if (
+      // If use has defined the version option,
+      // which indicates that user will handle argv.version,
+      // then we should skip the default behavior
+      !argvManager.defined('version')
+      && argvManager.includedInRaw('-v', '--version')
+    ) {
+      console.log(this.version)
+      return
+    }
+
+    // User can override the behavior by define a help option
+    if (
+      !argvManager.defined('help')
+      && argvManager.includedInRaw('-h', '--help')
+    ) {
+      this.showHelp()
       return
     }
 
