@@ -213,7 +213,9 @@ module.exports = class Argv {
 
     // The args after '--'
     // eslint-disable-next-line no-underscore-dangle
-    parsed.__ = this._rawArgv.slice(index + 1)
+    parsed.__ = ~ index
+      ? this._rawArgv.slice(index + 1)
+      : []
 
     return parsed
   }

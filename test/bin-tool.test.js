@@ -27,12 +27,23 @@ const CASES = [
   [
     '--',
     ['normal', ['log', '--', '--no-limit'], {
-      DOUBLE_SLASH: '3'
+      DOUBLE_SLASH: 'true'
     }],
     {
       port: 3000,
       verbose: false,
       __: ['--no-limit']
+    }
+  ],
+  [
+    'with no --',
+    ['normal', ['log'], {
+      DOUBLE_SLASH: 'true'
+    }],
+    {
+      port: 3000,
+      verbose: false,
+      __: []
     }
   ],
   [
