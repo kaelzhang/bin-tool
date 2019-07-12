@@ -53,7 +53,7 @@ const parseAlias = (alias, name) => {
 const interpolatedCommand = (string, command) =>
   string.replace(/\$command/g, command)
 
-const printOptionsKey = key => key === 1
+const printOptionsKey = key => key.length === 1
   ? `-${key}`
   : `--${key}`
 
@@ -112,6 +112,15 @@ module.exports = class Argv {
     }
 
     throw error('INVALID_USAGE', usage)
+  }
+
+  description (description) {
+    if (isString(description)) {
+      this._description = description
+      return this
+    }
+
+    throw error('INVALID_DESC', description)
   }
 
   options (rawOptions) {
@@ -277,6 +286,13 @@ module.exports = class Argv {
     const ui = UI()
 
     ui.div(this._getUsage())
+
+    if (this._description) {
+      ui.div({
+        text: this._description,
+        padding: [1, 0, 0, 0]
+      })
+    }
 
     if (Object.keys(this._commands).length) {
       ui.div({

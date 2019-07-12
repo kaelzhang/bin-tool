@@ -166,3 +166,16 @@ CASES.forEach(([
     )
   })
 })
+
+test('help', async t => {
+  const content = await run('normal', ['log', '--help'], {
+    HAS_DESCRIPTION: 'true'
+  })
+
+  t.true(content.startsWith(`bin log [options]
+
+description
+
+Options:
+`))
+})

@@ -20,6 +20,14 @@ const SUB_COMMAND = symbol('sub-command')
 const OPTIONS = symbol('options')
 const USAGE = symbol('usage')
 
+const getDescription = self => {
+  const proto = Object.getPrototypeOf(self)
+
+  return 'description' in proto
+    ? self.description
+    : undefined
+}
+
 module.exports = class Command {
   constructor (argv = process.argv) {
     // <commandName, Command>
@@ -43,6 +51,11 @@ module.exports = class Command {
 
     if (this[USAGE]) {
       arg.usage(this[USAGE])
+    }
+
+    const desc = getDescription(this)
+    if (desc) {
+      arg.description(desc)
     }
 
     return arg

@@ -1,6 +1,6 @@
 const {Command} = require('../../..')
 
-module.exports = class extends Command {
+class Log extends Command {
   constructor () {
     super()
 
@@ -55,3 +55,13 @@ module.exports = class extends Command {
     }))
   }
 }
+
+if (process.env.HAS_DESCRIPTION) {
+  Object.defineProperty(Log.prototype, 'description', {
+    get () {
+      return 'description'
+    }
+  })
+}
+
+module.exports = Log
