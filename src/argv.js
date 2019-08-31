@@ -61,11 +61,13 @@ const printOptionKeys = (key, aliases) =>
   [key].concat(aliases).map(printOptionsKey).join(', ')
 
 const isBooleanType = type => type === 'boolean' || type === Boolean
+const isStringType = type => type === 'string' || type === String
 
 module.exports = class Argv {
   constructor () {
     this._aliases = Object.create(null)
     this._booleanKeys = new Set()
+    this._stringKeys = new Set()
     this._options = null
     this._userOptions = false
     this._shape = null
@@ -147,15 +149,19 @@ module.exports = class Argv {
         ...skema
       } = option
 
-      const isBoolean = isBooleanType(type)
+      let typeGroup
 
-      if (isBoolean) {
+      if (isBooleanType(type)) {
         this._booleanKeys.add(name)
+        typeGroup = this._booleanKeys
+      } else if (isStringType(type)) {
+        this._stringKeys.add(name)
+        typeGroup = this._stringKeys
       }
 
       const aliases = parseAlias(alias, name)
 
-      this._addAlias(name, aliases, isBoolean)
+      this._addAlias(name, aliases, typeGroup)
 
       const required = skema.required === true
       const isEnumerable = enumerable !== false
@@ -195,12 +201,12 @@ module.exports = class Argv {
     return this
   }
 
-  _addAlias (name, aliases, isBoolean) {
+  _addAlias (name, aliases, typeGroup) {
     for (const alias of aliases) {
       this.alias(name, alias)
 
-      if (isBoolean) {
-        this._booleanKeys.add(alias)
+      if (typeGroup) {
+        typeGroup.add(alias)
       }
     }
   }
@@ -227,7 +233,8 @@ module.exports = class Argv {
   async parse () {
     const parsed = minimist(this._rawArgv.slice(this._offset), {
       [DOUBLE_DASH]: true,
-      boolean: [...this._booleanKeys]
+      boolean: [...this._booleanKeys],
+      string: [...this._stringKeys]
     })
 
     this._applyAliases(parsed)
