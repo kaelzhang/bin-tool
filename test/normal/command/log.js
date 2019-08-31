@@ -1,5 +1,7 @@
 const {Command} = require('../../..')
 
+const DOUBLE_DASH = '--'
+
 class Log extends Command {
   constructor () {
     super()
@@ -37,16 +39,23 @@ class Log extends Command {
     argv: {
       port,
       verbose,
-      __
+      [DOUBLE_DASH]: __,
+      __: _
     }
   }) {
     if (process.env.DOUBLE_SLASH) {
       console.log(JSON.stringify({
         port,
         verbose,
-        __
+        [DOUBLE_DASH]: __
       }))
       return
+    }
+
+    if (process.env.DOUBLE_UNDERSCORE) {
+      console.log(JSON.stringify({
+        __: _
+      }))
     }
 
     console.log(JSON.stringify({

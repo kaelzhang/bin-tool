@@ -2,6 +2,8 @@ const test = require('ava')
 // const log = require('util').debuglog('bin-tool')
 const {run} = require('./run')
 
+const DOUBLE_DASH = '--'
+
 const CASES = [
   [
     // description
@@ -60,7 +62,7 @@ const CASES = [
     {
       port: 3000,
       verbose: false,
-      __: ['--no-limit']
+      [DOUBLE_DASH]: ['--no-limit']
     }
   ],
   [
@@ -71,7 +73,16 @@ const CASES = [
     {
       port: 3000,
       verbose: false,
-      __: []
+      [DOUBLE_DASH]: []
+    }
+  ],
+  [
+    '__ (double underscores)',
+    ['normal', ['log', '--__', 'foo'], {
+      DOUBLE_UNDERSCORE: 'true'
+    }],
+    {
+      __: 'foo'
     }
   ],
   [

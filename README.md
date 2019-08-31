@@ -42,6 +42,7 @@ const path = require('path')
 
 class Bin extends Command {
   constructor () {
+    super()
     this.load(path.join(__dirname, 'commands'))
   }
 }
@@ -56,6 +57,7 @@ const {Command} = require('bin-tool')
 
 module.exports = class extends Command {
   constructor () {
+    super()
     this.options = {
       port: {
         type: 'number',

@@ -210,8 +210,10 @@ module.exports = class Argv {
     }
   }
 
-  async _parse () {
-    const parsed = minimist(this._rawArgv.slice(this._offset))
+  async parse () {
+    const parsed = minimist(this._rawArgv.slice(this._offset), {
+      [DOUBLE_DASH]: true
+    })
 
     this._applyAliases(parsed)
 
@@ -220,19 +222,6 @@ module.exports = class Argv {
     }
 
     return this._shape.from(parsed)
-  }
-
-  async parse () {
-    const parsed = await this._parse()
-    const index = this._rawArgv.findIndex(s => s === DOUBLE_DASH)
-
-    // The args after '--'
-    // eslint-disable-next-line no-underscore-dangle
-    parsed.__ = ~ index
-      ? this._rawArgv.slice(index + 1)
-      : []
-
-    return parsed
   }
 
   _getDefaultUsage (command) {
