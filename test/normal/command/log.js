@@ -56,6 +56,7 @@ class Log extends Command {
       console.log(JSON.stringify({
         __: _
       }))
+      return
     }
 
     console.log(JSON.stringify({

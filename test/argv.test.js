@@ -9,6 +9,16 @@ test('normal', async t => {
   t.is(argv.foo, true)
 })
 
-// test('normal', async t => {
+test('boolean type', async t => {
+  const argv = await new Argv()
+  .argv(['node', 'a', '--foo', 'bar'])
+  .options({
+    foo: {
+      type: 'boolean'
+    }
+  })
+  .parse()
 
-// })
+  t.is(argv.foo, true)
+  t.deepEqual(argv._, ['bar'])
+})

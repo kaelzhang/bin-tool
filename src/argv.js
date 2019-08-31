@@ -60,9 +60,12 @@ const printOptionsKey = key => key.length === 1
 const printOptionKeys = (key, aliases) =>
   [key].concat(aliases).map(printOptionsKey).join(', ')
 
+const isBooleanType = type => type === 'boolean' || type === Boolean
+
 module.exports = class Argv {
   constructor () {
     this._aliases = Object.create(null)
+    this._booleanKeys = new Set()
     this._options = null
     this._userOptions = false
     this._shape = null
@@ -140,12 +143,19 @@ module.exports = class Argv {
         alias,
         enumerable,
         description,
+        type,
         ...skema
       } = option
 
+      const isBoolean = isBooleanType(type)
+
+      if (isBoolean) {
+        this._booleanKeys.add(name)
+      }
+
       const aliases = parseAlias(alias, name)
 
-      this._addAlias(name, aliases)
+      this._addAlias(name, aliases, isBoolean)
 
       const required = skema.required === true
       const isEnumerable = enumerable !== false
@@ -185,9 +195,13 @@ module.exports = class Argv {
     return this
   }
 
-  _addAlias (name, aliases) {
+  _addAlias (name, aliases, isBoolean) {
     for (const alias of aliases) {
       this.alias(name, alias)
+
+      if (isBoolean) {
+        this._booleanKeys.add(alias)
+      }
     }
   }
 
@@ -212,7 +226,8 @@ module.exports = class Argv {
 
   async parse () {
     const parsed = minimist(this._rawArgv.slice(this._offset), {
-      [DOUBLE_DASH]: true
+      [DOUBLE_DASH]: true,
+      boolean: [...this._booleanKeys]
     })
 
     this._applyAliases(parsed)
