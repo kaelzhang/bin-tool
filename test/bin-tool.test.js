@@ -148,6 +148,24 @@ Commands:
     }],
     /already an alias of command/,
     true
+  ],
+  [
+    '--help, options always fail',
+    ['help', ['--help']],
+    'help'
+  ],
+  [
+    '-h, options always fail',
+    ['help', ['--help']],
+    'help'
+  ],
+  [
+    'help defined, options always fail',
+    ['help', ['--help', '--prop'], {
+      HELP_DEFINED: true
+    }],
+    /fail/,
+    true
   ]
 ]
 
