@@ -230,12 +230,20 @@ module.exports = class Argv {
     }
   }
 
-  async parse () {
-    const parsed = minimist(this._rawArgv.slice(this._offset), {
+  simpleParse () {
+    if (this._rawParsed) {
+      return this._rawParsed
+    }
+
+    return this._rawParsed = minimist(this._rawArgv.slice(this._offset), {
       [DOUBLE_DASH]: true,
       boolean: [...this._booleanKeys],
       string: [...this._stringKeys]
     })
+  }
+
+  async parse () {
+    const parsed = this.simpleParse()
 
     this._applyAliases(parsed)
 

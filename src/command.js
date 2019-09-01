@@ -210,10 +210,9 @@ module.exports = class Command {
   async [DISPATCH] () {
     // get parsed argument without handling helper and version
     const argvManager = this[ARGV]
-    const argv = await argvManager.parse()
-    log('argv: %j', argv)
+    const simple = argvManager.simpleParse()
 
-    const commandName = argv._[0]
+    const commandName = simple._[0]
 
     log('sub command: %s', commandName)
 
@@ -273,6 +272,10 @@ module.exports = class Command {
         })
       }
     }
+
+    const argv = await argvManager.parse()
+
+    log('argv: %j', argv)
 
     const context = {
       cwd: process.cwd(),
