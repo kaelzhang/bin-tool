@@ -134,6 +134,14 @@ Commands:
     true
   ],
   [
+    'invalid option groups',
+    ['normal', ['log'], {
+      INVALID_OPTION_GROUPS: 'true'
+    }],
+    /OptionGroup/,
+    true
+  ],
+  [
     'invalid load',
     ['normal', ['log'], {
       INVALID_LOAD: 'true'

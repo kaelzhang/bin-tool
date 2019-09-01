@@ -23,7 +23,7 @@ module.exports = Command => {
         }
 
         this.optionGroups = [{
-          title: 'Foo',
+          title: 'Foo:',
           options: ['foo']
         }]
       }

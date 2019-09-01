@@ -18,6 +18,14 @@ TE('INVALID_USAGE', 'usage must be string or function')
 
 TE('INVALID_DESC', 'description must be a string')
 
+E('INVALID_OPTION_GROUPS', `optionGroups should be an array of OptionGroup
+
+  interface OptionGroup {
+    title: string
+    options: Array<string>
+  }
+`)
+
 TE('INVALID_USAGE_RETURN_TYPE', 'usage of function type must return a string')
 
 E('ALIAS_CONFLICT',

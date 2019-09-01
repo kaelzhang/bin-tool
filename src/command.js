@@ -2,7 +2,9 @@ const log = require('util').debuglog('bin-tool')
 const assert = require('assert')
 const fs = require('fs')
 const path = require('path')
-const {isNumber} = require('core-util-is')
+const {
+  isNumber, isObject, isString, isArray
+} = require('core-util-is')
 
 const error = require('./error')
 const Argv = require('./argv')
@@ -28,6 +30,13 @@ const getDescription = self => {
     ? self.description
     : undefined
 }
+
+const isOptionGroup = group => isObject(group)
+  && isString(group.title)
+  && isArray(group.options)
+  && group.options.every(isString)
+
+const isOptionGroups = groups => isArray(groups) && groups.every(isOptionGroup)
 
 module.exports = class Command {
   constructor (argv = process.argv) {
@@ -91,6 +100,10 @@ module.exports = class Command {
   }
 
   set optionGroups (groups) {
+    if (!isOptionGroups(groups)) {
+      throw error('INVALID_OPTION_GROUPS')
+    }
+
     this[GROUPS] = groups
   }
 

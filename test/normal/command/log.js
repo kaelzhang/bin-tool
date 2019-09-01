@@ -33,6 +33,13 @@ class Log extends Command {
     if (process.env.SUB_OFFSET) {
       this.offset = 3
     }
+
+    if (process.env.INVALID_OPTION_GROUPS) {
+      this.optionGroups = [{
+        title: 'foo',
+        options: [1]
+      }]
+    }
   }
 
   run ({

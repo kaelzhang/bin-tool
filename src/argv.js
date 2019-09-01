@@ -65,7 +65,7 @@ const renderOptionGroup = (ui, {
   options
 }) => {
   ui.div({
-    text: `${title}:`,
+    text: title,
     padding: [1, 0, 0, 0]
   })
 
@@ -416,7 +416,7 @@ module.exports = class Argv {
     }
 
     groups.unshift({
-      title: 'Options',
+      title: 'Options:',
       options: defaultOptions
     })
 
