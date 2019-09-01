@@ -166,7 +166,20 @@ Commands:
     }],
     /fail/,
     true
-  ]
+  ],
+  [
+    'optionGroups',
+    ['help', ['--help'], {
+      OPTION_GROUPS: true
+    }],
+    `bin [options]
+
+Options:
+  --prop
+
+Foo:
+  --foo`
+  ],
 ]
 
 CASES.forEach(([
