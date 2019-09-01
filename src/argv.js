@@ -60,6 +60,42 @@ const printOptionsKey = key => key.length === 1
 const printOptionKeys = (key, aliases) =>
   [key].concat(aliases).map(printOptionsKey).join(', ')
 
+const renderOptionGroup = (ui, {
+  title,
+  options
+}) => {
+  ui.div({
+    text: `${title}:`,
+    padding: [1, 0, 0, 0]
+  })
+
+  for (const {
+    key,
+    option: {
+      enumerable,
+      aliases,
+      description = ''
+    }
+  } of options) {
+    if (!enumerable) {
+      continue
+    }
+
+    const cells = [{
+      text: printOptionKeys(key, aliases),
+      width: 20,
+      padding: [0, 2, 0, 2]
+    }, {
+      text: description,
+      width: 50
+    }]
+
+    // TODO: type and required
+
+    ui.div(...cells)
+  }
+}
+
 const isBooleanType = type => type === 'boolean' || type === Boolean
 const isStringType = type => type === 'string' || type === String
 
@@ -72,6 +108,7 @@ module.exports = class Argv {
     this._userOptions = false
     this._shape = null
     this._usage = undefined
+    this._groups = []
     this._commands = Object.create(null)
     this._offset = 2
     this._rawArgv = []
@@ -117,6 +154,11 @@ module.exports = class Argv {
     }
 
     throw error('INVALID_USAGE', usage)
+  }
+
+  groups (groups) {
+    this._groups = groups
+    return this
   }
 
   description (description) {
@@ -335,35 +377,49 @@ module.exports = class Argv {
     }
 
     if (this._userOptions) {
-      ui.div({
-        text: 'Options:',
-        padding: [1, 0, 0, 0]
-      })
-
-      for (const [key, {
-        enumerable,
-        aliases,
-        description = ''
-      }] of Object.entries(this._options)) {
-        if (!enumerable) {
-          continue
-        }
-
-        const cells = [{
-          text: printOptionKeys(key, aliases),
-          width: 20,
-          padding: [0, 2, 0, 2]
-        }, {
-          text: description,
-          width: 50
-        }]
-
-        // TODO: type and required
-
-        ui.div(...cells)
+      for (const group of this._getGroups()) {
+        renderOptionGroup(ui, group)
       }
     }
 
     return ui.toString()
+  }
+
+  _getGroups () {
+    const optionsMap = {
+      ...this._options
+    }
+
+    const groups = this._groups.map(({title, options}) => {
+      options = options
+      .map(key => {
+        const option = optionsMap[key]
+        delete optionsMap[key]
+
+        if (option) {
+          return {
+            key, option
+          }
+        }
+
+        return false
+      })
+      .filter(Boolean)
+
+      return {title, options}
+    })
+
+    const defaultOptions = []
+
+    for (const [key, option] of Object.entries(optionsMap)) {
+      defaultOptions.push({key, option})
+    }
+
+    groups.unshift({
+      title: 'Options',
+      options: defaultOptions
+    })
+
+    return groups.filter(({options}) => options.length !== 0)
   }
 }

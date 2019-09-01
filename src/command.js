@@ -19,6 +19,7 @@ const OFFSET = symbol('offset')
 const SUB_COMMAND = symbol('sub-command')
 const OPTIONS = symbol('options')
 const USAGE = symbol('usage')
+const GROUPS = symbol('groups')
 
 const getDescription = self => {
   const proto = Object.getPrototypeOf(self)
@@ -53,6 +54,10 @@ module.exports = class Command {
       arg.usage(this[USAGE])
     }
 
+    if (this[GROUPS]) {
+      arg.groups(this[GROUPS])
+    }
+
     const desc = getDescription(this)
     if (desc) {
       arg.description(desc)
@@ -83,6 +88,10 @@ module.exports = class Command {
   // @param  {String} usage - usage info
   set usage (usage) {
     this[USAGE] = usage
+  }
+
+  set optionGroups (groups) {
+    this[GROUPS] = groups
   }
 
   // command handler, could be async function / normal function
@@ -207,6 +216,10 @@ module.exports = class Command {
     return this[VERSION]
   }
 
+  showVersion () {
+    console.log(this.version)
+  }
+
   async [DISPATCH] () {
     // get parsed argument without handling helper and version
     const argvManager = this[ARGV]
@@ -244,7 +257,7 @@ module.exports = class Command {
       !argvManager.defined('version')
       && argvManager.includedInRaw('-v', '--version')
     ) {
-      console.log(this.version)
+      this.showVersion()
       return
     }
 

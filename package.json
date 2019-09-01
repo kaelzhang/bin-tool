@@ -42,18 +42,18 @@
     "url": "https://github.com/kaelzhang/bin-tool/issues"
   },
   "devDependencies": {
-    "@ostai/eslint-config": "^3.3.1",
-    "ava": "^2.2.0",
+    "@ostai/eslint-config": "^3.5.0",
+    "ava": "^2.3.0",
     "codecov": "^3.5.0",
-    "eslint": "^6.0.1",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
     "nyc": "^14.1.1"
   },
   "dependencies": {
     "cliui": "^5.0.0",
     "core-util-is": "^1.0.2",
-    "err-object": "^5.1.2",
+    "err-object": "^5.1.4",
     "minimist": "^1.2.0",
-    "skema": "^9.4.1"
+    "skema": "^9.4.2"
   }
 }
