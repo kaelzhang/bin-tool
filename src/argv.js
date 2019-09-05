@@ -10,7 +10,8 @@ const error = require('./error')
 
 const {
   shape,
-  any
+  any,
+  set
 } = defaults({
   async: true,
   types: BASIC_TYPES.LOOSE
@@ -99,7 +100,7 @@ const renderOptionGroup = (ui, {
 const isBooleanType = type => type === 'boolean' || type === Boolean
 const isStringType = type => type === 'string' || type === String
 
-module.exports = class Argv {
+class Argv {
   constructor () {
     this._aliases = Object.create(null)
     this._booleanKeys = new Set()
@@ -422,4 +423,9 @@ module.exports = class Argv {
 
     return groups.filter(({options}) => options.length !== 0)
   }
+}
+
+module.exports = {
+  Argv,
+  set
 }

@@ -7,7 +7,7 @@ const {
 } = require('core-util-is')
 
 const error = require('./error')
-const Argv = require('./argv')
+const {Argv} = require('./argv')
 
 const symbol = name => Symbol(`bin-tool:${name}`)
 

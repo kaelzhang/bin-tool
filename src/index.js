@@ -1,7 +1,11 @@
 const Command = require('./command')
-const Argv = require('./argv')
+const {
+  Argv,
+  set
+} = require('./argv')
 
 module.exports = {
   Command,
-  Argv
+  Argv,
+  set
 }
