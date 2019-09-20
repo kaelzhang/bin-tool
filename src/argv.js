@@ -1,6 +1,6 @@
 const path = require('path')
 const {defaults, BASIC_TYPES} = require('skema')
-const minimist = require('minimist')
+const minimist = require('@ostai/minimist')
 const {
   isObject, isArray, isString, isFunction
 } = require('core-util-is')
@@ -14,7 +14,8 @@ const {
   set
 } = defaults({
   async: true,
-  types: BASIC_TYPES.LOOSE
+  types: BASIC_TYPES.LOOSE,
+  isDefault: (rawParent, key) => rawParent[key] === undefined
 })
 
 const DOUBLE_DASH = '--'
@@ -105,6 +106,7 @@ class Argv {
     this._aliases = Object.create(null)
     this._booleanKeys = new Set()
     this._stringKeys = new Set()
+    this._defaultValues = Object.create(null)
     this._options = null
     this._userOptions = false
     this._shape = null
@@ -188,9 +190,13 @@ class Argv {
         alias,
         enumerable,
         description,
-        type,
         ...skema
       } = option
+
+      const {
+        type,
+        default: defaultValue
+      } = skema
 
       let typeGroup
 
@@ -200,6 +206,15 @@ class Argv {
       } else if (isStringType(type)) {
         this._stringKeys.add(name)
         typeGroup = this._stringKeys
+      }
+
+      // The type changed by miminist
+      if (typeGroup) {
+        this._defaultValues[name] = isFunction(defaultValue)
+          // Set the default value for minimist as `undefined`,
+          // and skema will treat it as a default value
+          ? undefined
+          : defaultValue
       }
 
       const aliases = parseAlias(alias, name)
@@ -281,7 +296,8 @@ class Argv {
     return this._rawParsed = minimist(this._rawArgv.slice(this._offset), {
       [DOUBLE_DASH]: true,
       boolean: [...this._booleanKeys],
-      string: [...this._stringKeys]
+      string: [...this._stringKeys],
+      default: this._defaultValues
     })
   }
 

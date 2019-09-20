@@ -18,6 +18,9 @@ test('boolean type, and string type', async t => {
     },
     baz: {
       type: 'string'
+    },
+    qux: {
+      default: true
     }
   })
   .parse()
@@ -25,5 +28,8 @@ test('boolean type, and string type', async t => {
   t.is(argv.foo, true)
   t.deepEqual(argv._, ['bar'])
   t.is(argv.baz, '')
+
+  t.is(argv.qux, true)
+
   t.is(argv.quux, true)
 })
