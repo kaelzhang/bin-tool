@@ -305,7 +305,7 @@ module.exports = class Command {
 
     const context = {
       cwd: process.cwd(),
-      rawArgv: this.rawArgv,
+      rawArgv: this[PROCESS_ARGV],
       argv
     }
 
